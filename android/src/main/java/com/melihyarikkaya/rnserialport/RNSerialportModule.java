@@ -51,7 +51,6 @@ public class RNSerialportModule extends ReactContextBaseJavaModule {
   private final String ACTION_USB_READY = "com.felhr.connectivityservices.USB_READY";
   private final String ACTION_USB_ATTACHED = "android.hardware.usb.action.USB_DEVICE_ATTACHED";
   private final String ACTION_USB_DETACHED = "android.hardware.usb.action.USB_DEVICE_DETACHED";
-  private final String ACTION_USB_NOT_SUPPORTED = "com.felhr.usbservice.USB_NOT_SUPPORTED";
   private final String ACTION_NO_USB = "com.felhr.usbservice.NO_USB";
   private final String ACTION_USB_PERMISSION_GRANTED = "com.felhr.usbservice.USB_PERMISSION_GRANTED";
   private final String ACTION_USB_PERMISSION_NOT_GRANTED = "com.felhr.usbservice.USB_PERMISSION_NOT_GRANTED";
@@ -110,9 +109,6 @@ public class RNSerialportModule extends ReactContextBaseJavaModule {
         case ACTION_USB_DISCONNECTED:
           eventEmit(onDisconnectedEvent, null);
           break;
-        case ACTION_USB_NOT_SUPPORTED:
-          eventEmit(onErrorEvent, createError(Definitions.ERROR_DEVICE_NOT_SUPPORTED, Definitions.ERROR_DEVICE_NOT_SUPPORTED_MESSAGE));
-          break;
         case ACTION_USB_NOT_OPENED:
           eventEmit(onErrorEvent, createError(Definitions.ERROR_COULD_NOT_OPEN_SERIALPORT, Definitions.ERROR_COULD_NOT_OPEN_SERIALPORT_MESSAGE));
           break;
@@ -166,7 +162,6 @@ public class RNSerialportModule extends ReactContextBaseJavaModule {
     filter.addAction(ACTION_NO_USB);
     filter.addAction(ACTION_USB_CONNECT);
     filter.addAction(ACTION_USB_DISCONNECTED);
-    filter.addAction(ACTION_USB_NOT_SUPPORTED);
     filter.addAction(ACTION_USB_PERMISSION_NOT_GRANTED);
     filter.addAction(ACTION_USB_PERMISSION);
     filter.addAction(ACTION_USB_ATTACHED);
@@ -517,12 +512,6 @@ public class RNSerialportModule extends ReactContextBaseJavaModule {
           serialPort = UsbSerialDevice.createUsbSerialDevice(device, connection, portInterface);
         } else {
           serialPort = UsbSerialDevice.createUsbSerialDevice(driver, device, connection, portInterface);
-        }
-        if(serialPort == null) {
-          // No driver for given device
-          Intent intent = new Intent(ACTION_USB_NOT_SUPPORTED);
-          reactContext.sendBroadcast(intent);
-          return;
         }
 
         if(!serialPort.open()){
