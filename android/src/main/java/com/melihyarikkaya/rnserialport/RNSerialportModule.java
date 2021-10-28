@@ -97,11 +97,11 @@ public class RNSerialportModule extends ReactContextBaseJavaModule {
 
   private boolean usbServiceStarted = false;
 
-  private final BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
+  private final BroadcastReceiver usbReceiver = new BroadcastReceiver() {
     @Override
-    public void onReceive(Context arg0, Intent arg1) {
-      Intent intent;
-      switch (arg1.getAction()) {
+    public void onReceive(Context context, Intent intent) {
+      String action = intent.getAction();
+      switch (action) {
         case ACTION_USB_CONNECT:
           eventEmit(onConnectedEvent, null);
           break;
@@ -124,7 +124,7 @@ public class RNSerialportModule extends ReactContextBaseJavaModule {
           }
           break;
         case ACTION_USB_PERMISSION :
-          boolean granted = arg1.getExtras().getBoolean(UsbManager.EXTRA_PERMISSION_GRANTED);
+          boolean granted = intent.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false);
           startConnection(granted);
           break;
         case ACTION_USB_PERMISSION_GRANTED:
@@ -165,7 +165,7 @@ public class RNSerialportModule extends ReactContextBaseJavaModule {
     filter.addAction(ACTION_USB_PERMISSION);
     filter.addAction(ACTION_USB_ATTACHED);
     filter.addAction(ACTION_USB_DETACHED);
-    reactContext.registerReceiver(mUsbReceiver, filter);
+    reactContext.registerReceiver(usbReceiver, filter);
   }
 
   private void fillDriverList() {
@@ -264,7 +264,7 @@ public class RNSerialportModule extends ReactContextBaseJavaModule {
     if(!usbServiceStarted) {
       return;
     }
-    reactContext.unregisterReceiver(mUsbReceiver);
+    reactContext.unregisterReceiver(usbReceiver);
     usbServiceStarted = false;
     eventEmit(onServiceStopped, null);
   }
