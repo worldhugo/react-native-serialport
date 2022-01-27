@@ -137,9 +137,9 @@ public class RNSerialportModule extends ReactContextBaseJavaModule {
     }
   };
 
-  private void eventEmit(String eventName, @Nullable WritableMap data) {
+  private void eventEmit(String eventName, Object data) {
     try {
-      if(reactContext.hasActiveReactInstance()) {
+      if(reactContext.hasActiveCatalystInstance()) {
         reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(eventName, data);
       }
     }
