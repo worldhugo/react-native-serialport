@@ -56,5 +56,11 @@ allprojects {
 dependencies {
     implementation 'com.google.guava:guava:20.0'
     implementation 'com.facebook.react:react-native:+'
-    implementation 'com.github.angelix:UsbSerial:fdefe94f65'
+    implementation('com.github.felHR85:UsbSerial:7ad6c9f6') {
+      artifact {
+          name = 'UsbSerial'
+          classifier = 'release'
+          type = 'aar'
+      }
+  }
 }
